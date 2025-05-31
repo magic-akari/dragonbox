@@ -38,7 +38,7 @@
 //! fn main() {
 //!     let mut buffer = dragonbox::Buffer::new();
 //!     let printed = buffer.format(1.234);
-//!     assert_eq!(printed, "1.234E0");
+//!     assert_eq!(printed, "1.234");
 //! }
 //! ```
 //!
@@ -92,7 +92,7 @@ use core::mem::MaybeUninit;
 /// ```
 /// let mut buffer = dragonbox::Buffer::new();
 /// let printed = buffer.format_finite(1.234);
-/// assert_eq!(printed, "1.234E0");
+/// assert_eq!(printed, "1.234");
 /// ```
 pub struct Buffer {
     bytes: [MaybeUninit<u8>; to_chars::MAX_OUTPUT_STRING_LENGTH],

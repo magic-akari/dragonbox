@@ -8,7 +8,7 @@ impl Buffer {
     /// for efficiency.
     #[inline]
     pub fn new() -> Self {
-        let bytes = [MaybeUninit::<u8>::uninit(); 24];
+        let bytes = [MaybeUninit::<u8>::uninit(); 25];
         Buffer { bytes }
     }
 
@@ -77,8 +77,8 @@ impl Default for Buffer {
 impl Float for f64 {}
 
 const NAN: &str = "NaN";
-const INFINITY: &str = "inf";
-const NEG_INFINITY: &str = "-inf";
+const INFINITY: &str = "Infinity";
+const NEG_INFINITY: &str = "-Infinity";
 
 pub trait Sealed: Copy {
     fn is_nonfinite(self) -> bool;
