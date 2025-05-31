@@ -1,3 +1,3 @@
 #![no_std]
 
-pub use dragonbox::*;
+pub use dragonbox_ecma::*;

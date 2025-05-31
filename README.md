@@ -17,7 +17,7 @@ to the Ryū algorithm.
 
 ```rust
 fn main() {
-    let mut buffer = dragonbox::Buffer::new();
+    let mut buffer = dragonbox_ecma::Buffer::new();
     let printed = buffer.format(1.234);
     assert_eq!(printed, "1.234");
 }

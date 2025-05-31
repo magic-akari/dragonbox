@@ -18,7 +18,7 @@
 // is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.
 
-//! [![github]](https://github.com/dtolnay/dragonbox)&ensp;[![crates-io]](https://crates.io/crates/dragonbox)&ensp;[![docs-rs]](https://docs.rs/dragonbox)
+//! [![github]](https://github.com/magic-akari/dragonbox)&ensp;[![crates-io]](https://crates.io/crates/dragonbox_ecma)&ensp;[![docs-rs]](https://docs.rs/dragonbox_ecma)
 //!
 //! [github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
 //! [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
@@ -36,7 +36,7 @@
 //!
 //! ```
 //! fn main() {
-//!     let mut buffer = dragonbox::Buffer::new();
+//!     let mut buffer = dragonbox_ecma::Buffer::new();
 //!     let printed = buffer.format(1.234);
 //!     assert_eq!(printed, "1.234");
 //! }
@@ -47,7 +47,6 @@
 //! ![performance](https://raw.githubusercontent.com/dtolnay/dragonbox/master/performance.png)
 
 #![no_std]
-#![doc(html_root_url = "https://docs.rs/dragonbox/0.1.10")]
 #![allow(unsafe_op_in_unsafe_fn)]
 #![allow(
     clippy::bool_to_int_with_if,
@@ -90,7 +89,7 @@ use core::mem::MaybeUninit;
 /// ## Example
 ///
 /// ```
-/// let mut buffer = dragonbox::Buffer::new();
+/// let mut buffer = dragonbox_ecma::Buffer::new();
 /// let printed = buffer.format_finite(1.234);
 /// assert_eq!(printed, "1.234");
 /// ```
@@ -99,7 +98,7 @@ pub struct Buffer {
 }
 
 /// A floating point number that can be written into a
-/// [`dragonbox::Buffer`][Buffer].
+/// [`dragonbox_ecma::Buffer`][Buffer].
 ///
 /// This trait is sealed and cannot be implemented for types outside of the
 /// `dragonbox` crate.

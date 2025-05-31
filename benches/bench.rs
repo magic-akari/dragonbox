@@ -13,7 +13,7 @@ macro_rules! benches {
             $(
                 #[bench]
                 fn $name(b: &mut Bencher) {
-                    let mut buf = dragonbox::Buffer::new();
+                    let mut buf = dragonbox_ecma::Buffer::new();
 
                     b.iter(move || {
                         let value = black_box($value);

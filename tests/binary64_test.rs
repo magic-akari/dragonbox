@@ -31,6 +31,7 @@
 #[macro_use]
 mod macros;
 
+use dragonbox_ecma as dragonbox;
 use std::f64;
 
 fn to_chars(f: f64) -> String {
