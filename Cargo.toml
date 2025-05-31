@@ -1,15 +1,18 @@
 [package]
-name = "dragonbox"
-version = "0.1.10"
-authors = ["David Tolnay <dtolnay@gmail.com>"]
+name = "dragonbox_ecma"
+version = "0.0.2"
+authors = [
+    "David Tolnay <dtolnay@gmail.com>",
+    "magic-akari <akari.ccino@gmail.com>",
+]
 categories = ["value-formatting", "no-std", "no-std::no-alloc"]
-description = "Fast floating point to string conversion"
-documentation = "https://docs.rs/dragonbox"
+description = "Fast floating point to string conversion conforming to ECMAScript specification"
+documentation = "https://docs.rs/dragonbox_ecma"
 edition = "2018"
 exclude = ["performance.png", "chart/**"]
 keywords = ["float"]
 license = "Apache-2.0 WITH LLVM-exception OR BSL-1.0"
-repository = "https://github.com/dtolnay/dragonbox"
+repository = "https://github.com/magic-akari/dragonbox"
 rust-version = "1.52"
 
 [dev-dependencies]
