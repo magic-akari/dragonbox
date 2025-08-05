@@ -176,7 +176,7 @@ const fn compute_power64<const K: u32>(a: u64) -> u64 {
     p
 }
 
-const fn count_factors<const A: usize>(mut n: usize) -> u32 {
+const fn count_factors<const A: u64>(mut n: u64) -> u32 {
     // assert!(a > 1);
     let mut c = 0;
     while n % A == 0 {
@@ -431,7 +431,7 @@ fn prefer_round_down(decimal_significand: u64) -> bool {
 fn is_left_endpoint_integer_shorter_interval(exponent: i32) -> bool {
     const CASE_SHORTER_INTERVAL_LEFT_ENDPOINT_LOWER_THRESHOLD: i32 = 2;
     const CASE_SHORTER_INTERVAL_LEFT_ENDPOINT_UPPER_THRESHOLD: i32 = 2 + floor_log2(
-        compute_power64::<{ count_factors::<5>((1 << (SIGNIFICAND_BITS + 2)) - 1) + 1 }>(10) / 3,
+        compute_power64::<{ count_factors::<5>((1u64 << (SIGNIFICAND_BITS + 2)) - 1) + 1 }>(10) / 3,
     );
     exponent >= CASE_SHORTER_INTERVAL_LEFT_ENDPOINT_LOWER_THRESHOLD
         && exponent <= CASE_SHORTER_INTERVAL_LEFT_ENDPOINT_UPPER_THRESHOLD
