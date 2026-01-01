@@ -1,6 +1,6 @@
 [package]
 name = "dragonbox_ecma"
-version = "0.0.5"
+version = "0.1.0"
 authors = [
     "David Tolnay <dtolnay@gmail.com>",
     "magic-akari <akari.ccino@gmail.com>",
