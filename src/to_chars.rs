@@ -61,8 +61,7 @@ static RADIX_100_HEAD_TABLE: [u8; 200] = [
 // Main entry point for number to string conversion
 pub(crate) unsafe fn to_chars(x: f64, mut buffer: *mut u8) -> *mut u8 {
     let br = x.to_bits();
-    let exponent_bits = crate::extract_exponent_bits(br);
-    let s = crate::remove_exponent_bits(br, exponent_bits);
+    let s = crate::remove_exponent_bits(br);
 
     if crate::is_nonzero(br) {
         if crate::is_negative(s) {
@@ -88,7 +87,7 @@ unsafe fn convert_2_digits(n: u8, buffer: *mut u8) {
 // V8's ConvertHeadDigits function - returns digit count
 unsafe fn convert_head_digits(n: u8, buffer: *mut u8) -> u8 {
     debug_assert!(n < 100);
-    let digit_count = 1 + (n >= 10) as u8;
+    let digit_count = 1 + u8::from(n >= 10);
     let index = (n as usize) * 2;
     ptr::copy_nonoverlapping(
         RADIX_100_HEAD_TABLE.as_ptr().add(index),
@@ -103,7 +102,7 @@ unsafe fn convert_8_digits(n: u32, buffer: *mut u8) {
     const K_UINT32_MASK: u64 = u32::MAX as u64;
 
     // 281474978 = ceil(2^48 / 1'000'000) + 1
-    let mut prod = (n as u64) * 281474978;
+    let mut prod = u64::from(n) * 281474978;
     prod >>= 16;
     prod += 1;
     convert_2_digits((prod >> 32) as u8, buffer);
@@ -122,7 +121,7 @@ unsafe fn convert_up_to_9_digits(n: u32, mut buffer: *mut u8) -> u8 {
     if n >= 100_000_000 {
         // 9 digits.
         // 1441151882 = ceil(2^57 / 100'000'000) + 1
-        let mut prod = (n as u64) * 1441151882;
+        let mut prod = u64::from(n) * 1441151882;
         prod >>= 25;
 
         let head_digit = (prod >> 32) as u8;
@@ -144,7 +143,7 @@ unsafe fn convert_up_to_9_digits(n: u32, mut buffer: *mut u8) -> u8 {
     if n >= 1_000_000 {
         // 7 or 8 digits.
         // 281474978 = ceil(2^48 / 1'000'000) + 1
-        let mut prod = (n as u64) * 281474978;
+        let mut prod = u64::from(n) * 281474978;
         prod >>= 16;
 
         let head_digits = (prod >> 32) as u8;
@@ -164,7 +163,7 @@ unsafe fn convert_up_to_9_digits(n: u32, mut buffer: *mut u8) -> u8 {
     if n >= 10_000 {
         // 5 or 6 digits.
         // 429497 = ceil(2^32 / 10'000)
-        let mut prod = (n as u64) * 429497;
+        let mut prod = u64::from(n) * 429497;
 
         let head_digits = (prod >> 32) as u8;
         let head_digit_count = convert_head_digits(head_digits, buffer);
@@ -181,7 +180,7 @@ unsafe fn convert_up_to_9_digits(n: u32, mut buffer: *mut u8) -> u8 {
     if n >= 100 {
         // 3 or 4 digits.
         // 42949673 = ceil(2^32 / 100)
-        let mut prod = (n as u64) * 42949673;
+        let mut prod = u64::from(n) * 42949673;
 
         let head_digits = (prod >> 32) as u8;
         let head_digit_count = convert_head_digits(head_digits, buffer);
@@ -245,7 +244,7 @@ unsafe fn to_chars_detail(significand: u64, exponent: i32, mut buffer: *mut u8) 
     // Convert significand to decimal string using V8's optimized functions
     // No need for temporary buffer since we can write directly to the output buffer
     let mut decimal_rep = [0u8; 17];
-    let length = significand_to_chars(significand, decimal_rep.as_mut_ptr()) as i32;
+    let length = i32::from(significand_to_chars(significand, decimal_rep.as_mut_ptr()));
 
     let decimal_point = length as i32 + exponent;
 

@@ -24,10 +24,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [nightly, beta, stable, 1.63.0]
+        rust: [nightly, beta, stable, 1.86.0]
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{matrix.rust}}
@@ -36,7 +36,7 @@ jobs:
         if: matrix.rust == 'nightly'
       - run: cargo test --release
       - run: cargo test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: matrix.rust == 'nightly' && always()
         with:
           name: Cargo.lock
@@ -44,15 +44,15 @@ jobs:
         continue-on-error: true
 
   msrv:
-    name: Rust 1.52.0
+    name: Rust 1.79.0
     needs: pre_ci
     if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@1.52.0
-      - run: cargo check --manifest-path tests/crate/Cargo.toml
+      - uses: actions/checkout@v6
+      - uses: dtolnay/rust-toolchain@1.79.0
+      - run: cargo build
 
   doc:
     name: Documentation
@@ -63,24 +63,34 @@ jobs:
     env:
       RUSTDOCFLAGS: -Dwarnings
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@nightly
       - uses: dtolnay/install@cargo-docs-rs
       - run: cargo docs-rs
 
   miri:
-    name: Miri
+    name: Miri (${{matrix.name}})
     needs: pre_ci
     if: needs.pre_ci.outputs.continue
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: 64-bit little endian
+            target: x86_64-unknown-linux-gnu
+          - name: 64-bit big endian
+            target: powerpc64-unknown-linux-gnu
+          - name: 32-bit little endian
+            target: i686-unknown-linux-gnu
+          - name: 32-bit big endian
+            target: mips-unknown-linux-gnu
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@miri
-        with:
-          toolchain: nightly-2025-05-16  # https://github.com/rust-lang/miri/issues/4323
       - run: cargo miri setup
-      - run: cargo miri test
+      - run: cargo miri test --target ${{matrix.target}}
         env:
           MIRIFLAGS: -Zmiri-strict-provenance
 
@@ -90,7 +100,7 @@ jobs:
     if: github.event_name != 'pull_request'
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@clippy
       - run: cargo clippy --tests --benches -- -Dclippy::all -Dclippy::pedantic
 
@@ -100,7 +110,7 @@ jobs:
     if: github.event_name != 'pull_request'
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: dtolnay/rust-toolchain@stable
       - uses: dtolnay/install@cargo-outdated
       - run: cargo outdated --workspace --exit-code 1

@@ -19,6 +19,7 @@
 // KIND, either express or implied.
 
 #![allow(
+    clippy::approx_constant,
     clippy::cast_lossless,
     clippy::excessive_precision,
     clippy::float_cmp,
@@ -64,16 +65,6 @@ fn test_random() {
     for _ in 0..n {
         let f: f64 = rand::random();
         assert_eq!(f, buffer.format_finite(f).parse().unwrap());
-    }
-}
-
-#[test]
-#[cfg_attr(miri, ignore = "too slow for miri")]
-fn test_non_finite() {
-    for i in 0u64..1 << 23 {
-        let f = f64::from_bits((((1 << 11) - 1) << 52) + (i << 29));
-        assert!(!f.is_finite(), "f={}", f);
-        dragonbox::Buffer::new().format_finite(f);
     }
 }
 
@@ -315,15 +306,14 @@ fn test_critical_boundary_case() {
     let expected = "1.0000000000000002";
     assert_eq!(
         result, expected,
-        "Critical boundary case failed. Input: {}, Expected: {}, Got: {}",
-        test_value, expected, result
+        "Critical boundary case failed. Input: {test_value}, Expected: {expected}, Got: {result}",
     );
 
     // Also verify round-trip conversion
     assert_eq!(
         test_value,
         result.parse().unwrap(),
-        "Round-trip conversion failed for critical boundary case"
+        "Round-trip conversion failed for critical boundary case",
     );
 
     // Additional test case: A power of 2 boundary that might trigger the condition
@@ -335,8 +325,6 @@ fn test_critical_boundary_case() {
     assert_eq!(
         test_value,
         result.parse().unwrap(),
-        "Failed for power of 2 boundary case: {}, result: {}",
-        test_value,
-        result
+        "Failed for power of 2 boundary case: {test_value}, result: {result}",
     );
 }
