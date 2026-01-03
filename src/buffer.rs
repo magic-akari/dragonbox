@@ -1,3 +1,4 @@
+use crate::to_chars;
 use crate::{Buffer, Float};
 use core::mem::MaybeUninit;
 use core::slice;
@@ -8,7 +9,7 @@ impl Buffer {
     /// for efficiency.
     #[inline]
     pub fn new() -> Self {
-        let bytes = [MaybeUninit::<u8>::uninit(); 24];
+        let bytes = [MaybeUninit::<u8>::uninit(); to_chars::MAX_OUTPUT_STRING_LENGTH];
         Buffer { bytes }
     }
 
@@ -77,8 +78,14 @@ impl Default for Buffer {
 impl Float for f64 {}
 
 const NAN: &str = "NaN";
+#[cfg(not(feature = "ecma"))]
 const INFINITY: &str = "inf";
+#[cfg(feature = "ecma")]
+const INFINITY: &str = "Infinity";
+#[cfg(not(feature = "ecma"))]
 const NEG_INFINITY: &str = "-inf";
+#[cfg(feature = "ecma")]
+const NEG_INFINITY: &str = "-Infinity";
 
 pub trait Sealed: Copy {
     fn is_nonfinite(self) -> bool;

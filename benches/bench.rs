@@ -3,6 +3,8 @@ use std::f64;
 use std::hint;
 use std::io::Write;
 
+use dragonbox_ecma as dragonbox;
+
 fn do_bench(c: &mut Criterion, group_name: &str, float: f64) {
     let mut group = c.benchmark_group(group_name);
     group.bench_function("dragonbox", |b| {

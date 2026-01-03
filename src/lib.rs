@@ -18,7 +18,7 @@
 // is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 // KIND, either express or implied.
 
-//! [![github]](https://github.com/dtolnay/dragonbox)&ensp;[![crates-io]](https://crates.io/crates/dragonbox)&ensp;[![docs-rs]](https://docs.rs/dragonbox)
+//! [![github]](https://github.com/magic-akari/dragonbox)&ensp;[![crates-io]](https://crates.io/crates/dragonbox_ecma)&ensp;[![docs-rs]](https://docs.rs/dragonbox_ecma)
 //!
 //! [github]: https://img.shields.io/badge/github-8da0cb?style=for-the-badge&labelColor=555555&logo=github
 //! [crates-io]: https://img.shields.io/badge/crates.io-fc8d62?style=for-the-badge&labelColor=555555&logo=rust
@@ -36,9 +36,9 @@
 //!
 //! ```
 //! fn main() {
-//!     let mut buffer = dragonbox::Buffer::new();
+//!     let mut buffer = dragonbox_ecma::Buffer::new();
 //!     let printed = buffer.format(1.234);
-//!     assert_eq!(printed, "1.234E0");
+//!     assert_eq!(printed, "1.234");
 //! }
 //! ```
 //!
@@ -77,6 +77,7 @@ mod cache;
 mod div;
 mod log;
 mod policy;
+#[cfg_attr(feature = "ecma", path = "to_chars_ecma.rs")]
 mod to_chars;
 mod wuint;
 
@@ -90,16 +91,16 @@ use core::mem::MaybeUninit;
 /// ## Example
 ///
 /// ```
-/// let mut buffer = dragonbox::Buffer::new();
+/// let mut buffer = dragonbox_ecma::Buffer::new();
 /// let printed = buffer.format_finite(1.234);
-/// assert_eq!(printed, "1.234E0");
+/// assert_eq!(printed, "1.234");
 /// ```
 pub struct Buffer {
     bytes: [MaybeUninit<u8>; to_chars::MAX_OUTPUT_STRING_LENGTH],
 }
 
 /// A floating point number that can be written into a
-/// [`dragonbox::Buffer`][Buffer].
+/// [`dragonbox_ecma::Buffer`][Buffer].
 ///
 /// This trait is sealed and cannot be implemented for types outside of the
 /// `dragonbox` crate.
@@ -112,7 +113,9 @@ const EXPONENT_BITS: usize = 11;
 const MIN_EXPONENT: i32 = -1022;
 const MAX_EXPONENT: i32 = 1023;
 const EXPONENT_BIAS: i32 = -1023;
+#[allow(dead_code)]
 const DECIMAL_SIGNIFICAND_DIGITS: usize = 17;
+#[allow(dead_code)]
 const DECIMAL_EXPONENT_DIGITS: usize = 3;
 
 // Defines an unsigned integer type that is large enough
@@ -558,10 +561,22 @@ fn compute_nearest(signed_significand_bits: CarrierUint, exponent_bits: Exponent
     }
 }
 
+#[cfg(not(feature = "ecma"))]
 fn to_decimal(x: f64) -> Decimal {
     let br = x.to_bits();
     let exponent_bits = extract_exponent_bits(br);
     let s = remove_exponent_bits(br);
 
     compute_nearest(s, exponent_bits)
+}
+
+#[cfg(feature = "ecma")]
+fn to_decimal(x: f64) -> Decimal {
+    let br = x.to_bits();
+    let exponent_bits = extract_exponent_bits(br);
+    let s = remove_exponent_bits(br);
+
+    let mut decimal = compute_nearest(s, exponent_bits);
+    policy::remove_trailing_zeros(&mut decimal.significand, &mut decimal.exponent);
+    decimal
 }
