@@ -16,7 +16,7 @@ repository = "https://github.com/magic-akari/dragonbox"
 rust-version = "1.79"
 
 [dev-dependencies]
-rand = "0.9"
+rand = "0.10"
 
 [features]
 default = ["ecma"]
