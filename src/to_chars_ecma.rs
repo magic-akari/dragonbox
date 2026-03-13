@@ -246,7 +246,7 @@ unsafe fn to_chars_detail(significand: u64, exponent: i32, mut buffer: *mut u8) 
     let mut decimal_rep = [0u8; 17];
     let length = i32::from(significand_to_chars(significand, decimal_rep.as_mut_ptr()));
 
-    let decimal_point = length as i32 + exponent;
+    let decimal_point = length + exponent;
 
     if length <= decimal_point && decimal_point <= 21 {
         // ECMA-262 section 9.8.1 step 6.
