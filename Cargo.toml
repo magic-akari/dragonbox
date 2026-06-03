@@ -39,6 +39,7 @@ required-features = ["original_dragonbox"]
 [[test]]
 name = "binary64_test_ecma"
 path = "tests/binary64_test_ecma.rs"
+required-features = ["ecma"]
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
